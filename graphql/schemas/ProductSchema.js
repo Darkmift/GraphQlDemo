@@ -8,8 +8,6 @@ const {
 } = graphql;
 
 const ProductType = require('../typedefs/ProductType')
-const productData = require('../../data/mockData.json')
-const { makeId, paginate } = require('../../utils')
 const { queryResolver, mutationResolver } = require('../resolvers/ProductReolver')
 
 const RootQuery = new GraphQLObjectType({
