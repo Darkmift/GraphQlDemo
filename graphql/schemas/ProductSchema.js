@@ -10,6 +10,7 @@ const {
 const ProductType = require('../typedefs/ProductType')
 const productData = require('../../data/mockData.json')
 const { makeId, paginate } = require('../../utils')
+const { queryResolver, mutationResolver } = require('../resolvers/ProductReolver')
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
@@ -18,14 +19,7 @@ const RootQuery = new GraphQLObjectType({
       type: new GraphQLList(ProductType),
       args: { id: { type: GraphQLString }, size: { type: GraphQLInt }, page: { type: GraphQLInt } },
       resolve(parent, args) {
-        const { id, size = 5, page = 0 } = args
-        if (id) {
-          const product = productData.find(p => p.id === id)
-          const result = product ? [product] : null
-          return result
-        }
-        const paginationResult = paginate(productData, size, page);
-        return paginationResult;
+        return queryResolver(parent, args)
       },
     },
   },
@@ -42,15 +36,7 @@ const Mutation = new GraphQLObjectType({
         price: { type: GraphQLInt },
       },
       resolve(parent, args) {
-        const { name, description, price } = args
-        const newProduct = {
-          id: makeId(),
-          name,
-          description,
-          price
-        }
-        productData.unshift(newProduct);
-        return productData.find(p => p.id === newProduct.id);
+        return mutationResolver(parent, args)
       },
     },
   },
